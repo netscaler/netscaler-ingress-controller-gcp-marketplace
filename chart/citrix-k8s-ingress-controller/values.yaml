@@ -1,0 +1,33 @@
+# Default values for citrix-k8-ingress-controller.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# image contains information needed to fetch CIC image
+cic:
+  image: "quay.io/citrix/citrix-k8s-ingress-controller:1.1.1"
+  pullPolicy: "Always"
+serviceAccount: default
+#loginFileName is secret file for NetScaler login
+loginFileName:
+# nsIP is NetScaler NSIP/SNIP, SNIP in case of HA (mgmt has to be enabled)
+nsIP:
+nsVIP:
+# license accept should be 'yes' to run Citrix Ingress Controller
+license:
+   accept: no
+# nsPort is port for NetScaler NITRO
+nsPort: 443
+# nsProtocol is protocol for NetScaler NITRO
+nsProtocol: HTTPS
+# logLevel is to set level of CIC Logs
+logLevel: DEBUG
+ingressClass:
+#nodeWatch is used for automatic route configuration on NetScaler towards the pod network
+nodeWatch: false
+# exporter conatins information of prometheus-exporter
+exporter:
+  required: 0
+  image: "quay.io/citrix/netscaler-metrics-exporter:v1.0.4"
+  pullPolicy: Always
+  ports:
+       containerPort: 8888
