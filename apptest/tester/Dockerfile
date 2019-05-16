@@ -17,4 +17,5 @@ COPY tests/basic-suite.yaml /tests/basic-suite.yaml
 COPY tester.sh /tester.sh
 
 WORKDIR /
+RUN chmod 755 tester.sh
 ENTRYPOINT ["/tester.sh"]

@@ -120,7 +120,14 @@ clear config -force full
 add ns ip 172.18.0.5 255.255.0.0 -type snip -mgmt enabled
 enable ns mode MBF
 ```
-Now the VPX instance is ready
+Now the VPX instance is ready.
+
+#### Clone this repo
+Clone this repo. Go to citrix-ingress-controller-gcp-marketplace directory:
+```shell
+git clone https://github.com/citrix/citrix-ingress-controller-gcp-marketplace.git
+cd citrix-ingress-controller-gcp-marketplace/
+```
 
 #### Install the Application resource definition
 An Application resource is a collection of individual Kubernetes components,
@@ -138,12 +145,6 @@ The Application resource is defined by the [Kubernetes SIG-apps](https://github.
 
 
 ### **Install the Application**
-
-Clone this repo. Go to citrix-ingress-controller-gcp-marketplace directory:
-```shell
-git clone https://github.com/citrix/citrix-ingress-controller-gcp-marketplace.git
-cd citrix-ingress-controller-gcp-marketplace/
-```
 
 The following table lists the configurable parameters of the Citrix Ingress Controller chart and their default values.
 
