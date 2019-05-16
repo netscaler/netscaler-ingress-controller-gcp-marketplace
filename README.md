@@ -122,12 +122,6 @@ enable ns mode MBF
 ```
 Now the VPX instance is ready
 
-#### Clone this repo
-Clone this repo and the associated tools repo:
-```shell
-git clone --recursive https://github.com/GoogleCloudPlatform/click-to-deploy.git
-```
-
 #### Install the Application resource definition
 An Application resource is a collection of individual Kubernetes components,
 such as Services, Deployments, and so on, that you can manage as a group.
@@ -135,7 +129,7 @@ such as Services, Deployments, and so on, that you can manage as a group.
 To set up your cluster to understand Application resources, run the following
 command:
 ```shell
-kubectl apply -f "https://raw.githubusercontent.com/GoogleCloudPlatform/marketplace-k8s-app-tools/master/crd/app-crd.yaml"
+make crd/install
 ```
 
 You need to run this command once.
@@ -145,12 +139,10 @@ The Application resource is defined by the [Kubernetes SIG-apps](https://github.
 
 ### **Install the Application**
 
-Go to GoogleCloudPlatform/click-to-deploy/k8s folder and clone this repo. Go to citrix-ingress-controller-gcp-marketplace directory:
+Clone this repo. Go to citrix-ingress-controller-gcp-marketplace directory:
 ```shell
-cd click-to-deploy/k8s
 git clone https://github.com/citrix/citrix-ingress-controller-gcp-marketplace.git
 cd citrix-ingress-controller-gcp-marketplace/
-
 ```
 
 The following table lists the configurable parameters of the Citrix Ingress Controller chart and their default values.

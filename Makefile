@@ -1,7 +1,7 @@
-include ../app.Makefile
-include ../crd.Makefile
-include ../gcloud.Makefile
-include ../var.Makefile
+include ./app.Makefile
+include ./crd.Makefile
+include ./gcloud.Makefile
+include ./var.Makefile
 
 
 TAG ?= 1.1.1
@@ -43,6 +43,7 @@ TESTER_IMAGE ?= $(REGISTRY)/citrix-k8s-ingress-controller/tester:$(TAG)
 app/build:: .build/citrix-k8s-ingress-controller/debian9  \
             .build/citrix-k8s-ingress-controller/deployer \
             .build/citrix-k8s-ingress-controller/citrix-k8s-ingress-controller \
+            .build/citrix-k8s-ingress-controller/exporter \
             .build/citrix-k8s-ingress-controller/tester
 
 
@@ -96,7 +97,7 @@ app/build:: .build/citrix-k8s-ingress-controller/debian9  \
 	@touch "$@"
 
 
-.build/citrix-k8s-ingress-controller/citrix-k8s-ingress-controller: .build/var/REGISTRY \
+.build/citrix-k8s-ingress-controller/exporter: .build/var/REGISTRY \
                     .build/var/TAG \
                     | .build/citrix-k8s-ingress-controller
 	docker pull quay.io/citrix/netscaler-metrics-exporter:$(EXPORTER_TAG)
