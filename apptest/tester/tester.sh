@@ -19,7 +19,7 @@ shopt -s nullglob
 
 POD_NAME=$(kubectl get pod -oname \
          --namespace ${NAMESPACE} | \
-         sed -n "/\\/${APP_INSTANCE_NAME}-cpx-ingress/s.pods\\?/..p")
+         sed -n "/\\/${APP_INSTANCE_NAME}-cic-k8s-ingress-controller/s.pods\\?/..p")
 
 POD_IP=$(kubectl get pods "${POD_NAME}" \
        --namespace ${NAMESPACE} -ojsonpath="{.status.podIP}")

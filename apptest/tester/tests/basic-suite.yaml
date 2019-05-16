@@ -3,7 +3,7 @@ actions:
 - name: Is Citrix Ingress Controller instance up and running
   bashTest:
     script: |-
-      echo {POD_STATUS}
+      echo ${POD_STATUS}
     expect:
       stdout:
         contains: 'Running'
