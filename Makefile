@@ -4,9 +4,9 @@ include ./gcloud.Makefile
 include ./var.Makefile
 
 
-TAG ?= 1.1.1
-GCP_TAG ?=1.1
-EXPORTER_TAG ?= v1.0.4
+TAG ?= 1.13.15
+GCP_TAG ?=1.13
+EXPORTER_TAG ?= 1.4.7
 $(info ---- TAG = $(TAG))
 
 APP_DEPLOYER_IMAGE ?= $(REGISTRY)/citrix-k8s-ingress-controller/deployer:$(TAG)
@@ -61,8 +61,8 @@ app/build:: .build/citrix-k8s-ingress-controller/debian9  \
 
 
 .build/citrix-k8s-ingress-controller/deployer: deployer/* \
-                       chart/citrix-k8s-ingress-controller/* \
-                       chart/citrix-k8s-ingress-controller/templates/* \
+                       chart/citrix-ingress-controller/* \
+                       chart/citrix-ingress-controller/templates/* \
                        schema.yaml \
                        .build/var/APP_DEPLOYER_IMAGE \
                        .build/var/MARKETPLACE_TOOLS_TAG \
@@ -100,10 +100,10 @@ app/build:: .build/citrix-k8s-ingress-controller/debian9  \
 .build/citrix-k8s-ingress-controller/exporter: .build/var/REGISTRY \
                     .build/var/TAG \
                     | .build/citrix-k8s-ingress-controller
-	docker pull quay.io/citrix/netscaler-metrics-exporter:$(EXPORTER_TAG)
-	docker tag quay.io/citrix/netscaler-metrics-exporter:$(EXPORTER_TAG) \
-	    "$(REGISTRY)/citrix-k8s-ingress-controller/netscaler-metrics-exporter:$(TAG)"
-	docker push "$(REGISTRY)/citrix-k8s-ingress-controller/netscaler-metrics-exporter:$(TAG)"
+	docker pull quay.io/citrix/citrix-adc-metrics-exporter:$(EXPORTER_TAG)
+	docker tag quay.io/citrix/citrix-adc-metrics-exporter:$(EXPORTER_TAG) \
+	    "$(REGISTRY)/citrix-k8s-ingress-controller/citrix-adc-metrics-exporter:$(TAG)"
+	docker push "$(REGISTRY)/citrix-k8s-ingress-controller/citrix-adc-metrics-exporter:$(TAG)"
 	@touch "$@"
 
 

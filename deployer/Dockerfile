@@ -4,10 +4,10 @@ FROM marketplace.gcr.io/google/debian9 AS build
 RUN apt-get update \
     && apt-get install -y --no-install-recommends gettext
 
-ADD chart/citrix-k8s-ingress-controller /tmp/chart/
+ADD chart/citrix-ingress-controller /tmp/chart/
 RUN cd /tmp && tar -czvf /tmp/cic.tar.gz chart
 
-ADD apptest/deployer/citrix-k8s-ingress-controller-GKE /tmp/test/chart
+ADD apptest/deployer/citrix-ingress-controller /tmp/test/chart
 RUN cd /tmp/test \
     && tar -czvf /tmp/test/cic.tar.gz chart/
 
@@ -26,8 +26,9 @@ RUN cat /tmp/apptest/schema.yaml \
     | env -i "REGISTRY=$REGISTRY" "TAG=$TAG" envsubst \
     > /tmp/apptest/schema.yaml.new \
     && mv /tmp/apptest/schema.yaml.new /tmp/apptest/schema.yaml
+RUN cat /tmp/apptest/schema.yaml
 
-FROM gcr.io/cloud-marketplace-tools/k8s/deployer_helm:0.7.5
+FROM gcr.io/cloud-marketplace-tools/k8s/deployer_helm:latest
 COPY --from=build /tmp/cic.tar.gz /data/chart/
 COPY --from=build /tmp/test/cic.tar.gz /data-test/chart/
 COPY --from=build /tmp/apptest/schema.yaml /data-test/

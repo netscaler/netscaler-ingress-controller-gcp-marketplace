@@ -31,23 +31,48 @@ properties:
     x-google-marketplace:
       type: SERVICE_ACCOUNT
       serviceAccount:
+        description: "These Permission are required for configuring Citrix ADC VPX according to the current state of the Kubernetes Cluster"
         roles:
         - type: ClusterRole
           rulesType: CUSTOM
           rules:
-          - apiGroups: ['']
-            resources: ['services', 'endpoints', 'ingresses', 'pods', 'secrets', 'nodes']
-            verbs: ['*']
-          - apiGroups: ['extensions']
-            resources: ['ingresses', 'ingresses/status']
-            verbs: ['*']
-          - apiGroups: ['citrix.com']
-            resources: ['rewritepolicies']
-            verbs: ['*']
-          - apiGroups: ['apps']
-            resources: ['deployments']
-            verbs: ['*']
-  loginFileName:
+          - apiGroups: [""]
+            resources: ["endpoints", "ingresses", "pods", "secrets", "routes", "nodes", "namespaces", "configmaps"]
+            verbs: ["get", "list", "watch"]
+          - apiGroups: [""]
+            resources: ["services/status"]
+            verbs: ["patch"]
+          - apiGroups: [""]
+            resources: ["services"]
+            verbs: ["get", "list", "watch", "patch"]
+          - apiGroups: [""]
+            resources: ["events"]
+            verbs: ["create"]
+          - apiGroups: ["extensions","networking.k8s.io"]
+            resources: ["ingresses", "ingressclasses"]
+            verbs: ["get", "list", "watch"]
+          - apiGroups: ["extensions","networking.k8s.io"]
+            resources: ["ingresses/status"]
+            verbs: ["patch"]
+          - apiGroups: ["apiextensions.k8s.io"]
+            resources: ["customresourcedefinitions"]
+            verbs: ["get", "list", "watch"]
+          - apiGroups: ["apps"]
+            resources: ["deployments"]
+            verbs: ["get", "list", "watch"]
+          - apiGroups: ["citrix.com"]
+            resources: ["rewritepolicies", "continuousdeployments", "authpolicies", "ratelimits", "listeners", "httproutes", "wafs", "apigatewaypolicies", "bots"]
+            verbs: ["get", "list", "watch", "create", "delete", "patch"]
+          - apiGroups: ["citrix.com"]
+            resources: ["rewritepolicies/status", "continuousdeployments/status", "authpolicies/status", "ratelimits/status", "listeners/status", "httproutes/status", "wafs/status", "apigatewaypolicies/status", "bots/status"]
+            verbs: ["get", "list", "patch"]
+          - apiGroups: ["citrix.com"]
+            resources: ["vips"]
+            verbs: ["get", "list", "watch", "create", "delete"]
+          - apiGroups: ["crd.projectcalico.org"]
+            resources: ["ipamblocks"]
+            verbs: ["get", "list", "watch"]
+  adcCredentialSecret:
     type: string
     title: Secret file Name for Citrix ADC
     description: Secret file Name for Citrix ADC
@@ -77,7 +102,7 @@ properties:
     default: false
   exporter.image:
     type: string
-    default: $REGISTRY/netscaler-metrics-exporter:$TAG
+    default: $REGISTRY/citrix-adc-metrics-exporter:$TAG
     x-google-marketplace:
       type: IMAGE
   exporter.required:
@@ -97,6 +122,5 @@ required:
 - serviceAccount
 - cic.image
 - nsIP
-- nsVIP
 - exporter.required
 - exporter.image

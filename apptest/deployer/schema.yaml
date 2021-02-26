@@ -4,3 +4,6 @@ properties:
     default: $REGISTRY/tester:$TAG
     x-google-property:
       type: IMAGE
+  nsIP:
+    type: string
+    default: 172.18.0.5

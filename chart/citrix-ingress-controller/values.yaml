@@ -1,0 +1,77 @@
+# Default values for citrix-ingress-controller.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Citrix Ingress Controller config details
+image: quay.io/citrix/citrix-k8s-ingress-controller:1.13.15
+pullPolicy: IfNotPresent
+openshift: false
+adcCredentialSecret:
+nsIP: x.x.x.x
+nsVIP:
+nsSNIPS:
+license:
+   accept: no
+nsPort: 443
+nsProtocol: HTTPS
+logLevel: INFO
+entityPrefix:
+kubernetesURL:
+ingressClass:
+setAsDefaultIngressClass: False
+serviceClass:
+defaultSSLCertSecret:
+podIPsforServiceGroupMembers: False
+ignoreNodeExternalIP: False
+ipam: False
+logProxy:
+nodeWatch: false
+nodeSelector:
+  key:
+  value:
+updateIngressStatus: False
+
+routeLabels:
+namespaceLabels:
+
+cicSettings:
+  required: False
+  cicConfig:
+    NS_HTTP2_SERVER_SIDE: "OFF"
+    NS_COOKIE_VERSION: "0"
+
+# Exporter config details
+exporter:
+  required: false
+  image: quay.io/citrix/citrix-adc-metrics-exporter:1.4.7
+  pullPolicy: IfNotPresent
+  ports:
+    containerPort: 8888
+
+# For CRDs supported by Citrix Ingress Controller
+crds:
+  install: false
+  retainOnDelete: false
+
+# Config required to be done by Citrix Ingress Controller for sending metrics to Citrix Observability Exporter
+coeConfig:
+  required: false
+  distributedTracing:
+    enable: false
+    samplingrate: 100
+  endpoint:
+    server:
+  timeseries:
+    port: 30002
+    metrics:
+      enable: false
+      mode: 'avro'
+    auditlogs:
+      enable: false
+    events:
+      enable: false
+  transactions:
+    enable: false
+    port: 30001
+
+serviceAccount:
