@@ -38,12 +38,6 @@ spec:
     kind: Service
   - group: networking.k8s.io
     kind: IngressClass
-  - group: rbac.authorization.k8s.io
-    kind: ClusterRole
-  - group: rbac.authorization.k8s.io
-    kind: ClusterRoleBinding
-  - group: ''
-    kind: ServiceAccount
   - group: apiextensions.k8s.io
     kind: CustomResourceDefinition
   - group: monitoring.coreos.com
