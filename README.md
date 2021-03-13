@@ -197,13 +197,14 @@ Assign values to the required parameters:
 * NSIP should be replaced with the NSIP or SNIP with management access enabled of the VPX instance. In my example it is "172.18.0.5"
 * The user name and password of the Citrix ADC VPX or MPX appliance used as the ingress device. The Citrix ADC appliance needs to have system user account (non-default) with certain privileges so that Citrix ingress controller can configure the Citrix ADC VPX or MPX appliance. For instructions to create the system user account on Citrix ADC, see [Create System User Account for CIC in Citrix ADC](#create-system-user-account-for-cic-in-citrix-adc).
 
-    You can pass user name and password using Kubernetes secrets. Create a Kubernetes secret for the user name and password using the following command:
+  You can pass user name and password using Kubernetes secrets. Create a Kubernetes secret for the user name and password using the following command:
 
     ```
        kubectl create secret generic nslogin --from-literal=username='cic' --from-literal=password='mypassword'
     ```
-Use this secret name in NSSECRET parameter. 
+  Use this secret name in NSSECRET parameter.
 
+Set the following variables:
 
 ```shell
 NSIP=<NSIP-of-VPX-instance or SNIP-with-management-access-enabled>
