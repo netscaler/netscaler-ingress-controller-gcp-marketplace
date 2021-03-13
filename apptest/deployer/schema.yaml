@@ -6,4 +6,8 @@ properties:
       type: IMAGE
   nsIP:
     type: string
-    default: 172.18.0.5
+    default: 1.1.1.1
+  adcCredentialSecret:
+    type: string
+    default: nslogin
+  

@@ -4,7 +4,7 @@ include ./gcloud.Makefile
 include ./var.Makefile
 
 
-TAG ?= 1.13.15
+TAG ?= 1.13.20
 GCP_TAG ?=1.13
 EXPORTER_TAG ?= 1.4.7
 $(info ---- TAG = $(TAG))
