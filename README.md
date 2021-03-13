@@ -223,8 +223,7 @@ cat service_account.yaml | sed -e "s/{NAMESPACE}/$CITRIX_NAMESPACE/g" -e "s/{SER
 
 Create a template for the chart using the parameters you want to set:
 ```
-helm template chart/citrix-k8s-ingress-controller \
-  --name $CITRIX_NAME \
+helm template $CITRIX_NAME chart/citrix-ingress-controller \
   --namespace $CITRIX_NAMESPACE \
   --set license.accept=yes \
   --set serviceAccount=$CITRIX_SERVICEACCOUNT \
@@ -234,13 +233,13 @@ helm template chart/citrix-k8s-ingress-controller \
 
 Finally, deploy the chart:
 ```shell
-kubectl create -f /tmp/$CITRIX_NAME.yaml
+kubectl create -f /tmp/$CITRIX_NAME.yaml -n $CITRIX_NAMESPACE
 ```
 
 #### **Uninstall the Application**
 Delete the application, service account and cluster:
 ```shell
-kubectl delete -f /tmp/$CITRIX_NAME.yaml
+kubectl delete -f /tmp/$CITRIX_NAME.yaml -n $CITRIX_NAMESPACE
 cat service_account.yaml | sed -e "s/{NAMESPACE}/$CITRIX_NAMESPACE/g" -e "s/{SERVICEACCOUNTNAME}/$CITRIX_SERVICEACCOUNT/g" | kubectl delete -f -
 gcloud container clusters delete citrix-cic --zone asia-south1-a
 ```
