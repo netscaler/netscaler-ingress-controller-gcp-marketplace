@@ -12,7 +12,7 @@ x-google-marketplace:
   images:
     '':  # Primary image has no name.
       properties:
-        cic.image:
+        image:
           type: FULL
     citrix-adc-metrics-exporter:
       properties:

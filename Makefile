@@ -13,7 +13,7 @@ APP_DEPLOYER_IMAGE ?= $(REGISTRY)/citrix-k8s-ingress-controller/deployer:$(TAG)
 NAME ?= citrix-k8s-ingress-controller-1
 
 ifdef IMAGE_CITRIX_CONTROLLER
-  IMAGE_CITRIX_CONTROLLER_FIELD = , "cic.image": "$(IMAGE_CITRIX_CONTROLLER)" endif
+  IMAGE_CITRIX_CONTROLLER_FIELD = , "image": "$(IMAGE_CITRIX_CONTROLLER)" endif
 endif
 
 ifdef CITRIX_NSIP
