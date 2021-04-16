@@ -1,6 +1,8 @@
 x-google-marketplace:
   schemaVersion: v2
   applicationApiVersion: v1beta1
+  clusterConstraints:
+    k8sVersion: ">=1.18.0"
   publishedVersion: "$TAG"
   publishedVersionMetadata:
     releaseNote: >-
