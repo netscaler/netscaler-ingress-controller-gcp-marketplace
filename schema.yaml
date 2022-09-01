@@ -72,23 +72,23 @@ properties:
           rulesType: CUSTOM
           rules:
           - apiGroups: [""]
-            resources: ["endpoints", "ingresses", "pods", "secrets", "routes", "nodes", "namespaces", "configmaps"]
+            resources: ["endpoints", "pods", "secrets", "routes", "nodes", "namespaces", "configmaps","services"]
             verbs: ["get", "list", "watch"]
           - apiGroups: [""]
             resources: ["services/status"]
             verbs: ["patch"]
           - apiGroups: [""]
-            resources: ["services"]
-            verbs: ["get", "list", "watch", "patch"]
-          - apiGroups: [""]
             resources: ["events"]
             verbs: ["create"]
           - apiGroups: ["extensions","networking.k8s.io"]
-            resources: ["ingresses", "ingressclasses"]
+            resources: ["ingresses"]
             verbs: ["get", "list", "watch"]
           - apiGroups: ["extensions","networking.k8s.io"]
             resources: ["ingresses/status"]
             verbs: ["patch"]
+          - apiGroups: ["networking.k8s.io"]
+            resources: ["ingressclasses"]
+            verbs: ["get", "list", "watch"]
           - apiGroups: ["apiextensions.k8s.io"]
             resources: ["customresourcedefinitions"]
             verbs: ["get", "list", "watch"]
@@ -96,11 +96,11 @@ properties:
             resources: ["deployments"]
             verbs: ["get", "list", "watch"]
           - apiGroups: ["citrix.com"]
-            resources: ["rewritepolicies", "continuousdeployments", "authpolicies", "ratelimits", "listeners", "httproutes", "wafs", "apigatewaypolicies", "bots"]
+            resources: ["rewritepolicies", "continuousdeployments", "authpolicies", "ratelimits", "listeners", "httproutes", "wafs", "apigatewaypolicies", "bots", "corspolicies", "appqoepolicies"]
             verbs: ["get", "list", "watch", "create", "delete", "patch"]
           - apiGroups: ["citrix.com"]
-            resources: ["rewritepolicies/status", "continuousdeployments/status", "authpolicies/status", "ratelimits/status", "listeners/status", "httproutes/status", "wafs/status", "apigatewaypolicies/status", "bots/status"]
-            verbs: ["get", "list", "patch"]
+            resources: ["rewritepolicies/status", "continuousdeployments/status", "authpolicies/status", "ratelimits/status", "listeners/status", "httproutes/status", "wafs/status", "apigatewaypolicies/status", "bots/status", "corspolicies/status", "appqoepolicies/status"]
+            verbs: ["patch"]
           - apiGroups: ["citrix.com"]
             resources: ["vips"]
             verbs: ["get", "list", "watch", "create", "delete"]
@@ -143,6 +143,20 @@ properties:
     title: Prefix
     description: The prefix for the resources on the Citrix ADC VPX/MPX.
     default: k8s
+  jsonLog:
+    type: boolean
+    title: Log format in JSON
+    description: Set this argument to True if CIC log messages are required in JSON format
+    default: False
+  nitroReadTimeout:
+    type: integer
+    title: Nitro Timeout
+    description: The nitro Read timeout in seconds.
+    default: 20
+  clusterName:
+    type: string
+    title: Kubernetes cluster Identifier
+    description: The unique identifier of the kubernetes cluster on which the CIC is deployed. Used in multi-cluster deployments.
   kubernetesURL:
     type: string
     title: Kubernetes URL
@@ -179,6 +193,11 @@ properties:
     title: Use Node Internal IPs
     description: If this variable is set to 'True', then Citrix Ingress Controller prioritises the Node Internal IP to be used for service group members even if node ExternalIP is present.
     default: False
+  disableAPIServerCertVerify:
+    type: boolean
+    title: Disable API Server Cert Verification
+    description: Set this parameter to True for disabling API Server certificate verification.
+    default: False
   ipam:
     type: boolean
     title: Using IPAM Controller?
@@ -213,6 +232,20 @@ properties:
     enum:
     - '0'
     - '1'
+  nsConfigDnsRec:
+    type: boolean
+    title: Enable DNS address record addition through ingress.
+    description: Set to True to enable DNS address Record addition in ADC through Ingress.
+    default: False
+  nsSvcLbDnsRec:
+    type: boolean
+    title:  Enable DNS address record addition through service type LB.
+    description: Set to True to enable DNS address Record addition in ADC through Type Load Balancer Service
+    default: False
+  nsDnsNameserver:
+    type: string
+    title: DNS Nameservers
+    description: To add DNS Nameservers in ADC
   exporter.required:
     type: boolean
     title: Prometheus Exporter required?
@@ -256,6 +289,10 @@ properties:
     type: string
     title: IP address or DNS address of the analytics server.
     description: Set this value as the IP address or DNS address of the analytics server.
+  coeConfig.endpoint.service:
+    type: string
+    title: IP address or DNS address of the analytics service in Kubernetes.
+    description: Set this value as the IP address or service name with namespace of the analytics service deployed in k8s environment. Format is "namespace/servicename".
   coeConfig.timeseries.port:
     type: integer
     title: Port used to expose COE service for timeseries endpoint.
@@ -295,6 +332,27 @@ properties:
     default: 30001
     minimum: 0
     maximum: 65535
+  nsLbHashAlgo.required:
+    type: boolean
+    title: Enable LB consistent hashing algorithm
+    description: Set this value to enable the LB consistent hashing Algorithm
+    default: False
+  nsLbHashlgo.hashFingers:
+    type: integer
+    title: Number of fingers for Hash
+    description: Specify the number of fingers to be used for hashing algorithm.
+    default: 256
+    minimum: 1
+    maximum: 1024
+  nsLbHashAlgo.hashAlgorithm:
+    type: string
+    title: Hash Algorithm
+    description: Specifies the supported hashing algorithm.
+    default: 'DEFAULT'
+    enum:
+    - 'DEFAULT'
+    - 'JARH'
+    - 'PRAC'
   appUid:
     type: string
     x-google-marketplace:

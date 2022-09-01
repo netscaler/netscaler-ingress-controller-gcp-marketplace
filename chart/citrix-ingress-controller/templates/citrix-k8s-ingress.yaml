@@ -7,6 +7,7 @@ kind: Deployment
 {{- end }}
 metadata:
   name: {{ include "citrix-ingress-controller.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 spec:
   selector:
 {{- if .Values.openshift }}
@@ -36,6 +37,10 @@ spec:
 {{- else }}
         app: {{ include "citrix-ingress-controller.fullname" . }}
 {{- end }}
+{{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+{{- end }}
     spec:
       serviceAccountName: {{ .Values.serviceAccount }}
       containers:
@@ -44,13 +49,13 @@ spec:
         imagePullPolicy: {{ .Values.pullPolicy }}
         args:
           - --configmap
-            {{ .Release.Namespace }}/{{ .Release.Name }}-configmap
+            {{ .Release.Namespace }}/{{ include "cicconfigmap.fullname" . }}
 {{- if .Values.defaultSSLCertSecret }}
           - --default-ssl-certificate
             {{ .Release.Namespace }}/{{ .Values.defaultSSLCertSecret }}
 {{- end }}
 {{- if .Values.ingressClass }}
-          - --ingress-class
+          - --ingress-classes
             {{ .Values.ingressClass }}
 {{- end }}
 {{- if .Values.serviceClass }}
@@ -59,9 +64,15 @@ spec:
 {{- end }}
           - --feature-node-watch
             {{ .Values.nodeWatch }}
+          - --enable-cnc-pbr
+            {{ .Values.cncPbr }}
 {{- if .Values.ipam }}
           - --ipam
             citrix-ipam-controller
+{{- end }}
+{{- if .Values.disableAPIServerCertVerify }}
+          - --disable-apiserver-cert-verify
+            {{ .Values.disableAPIServerCertVerify }}
 {{- end }}
 {{- if .Values.updateIngressStatus }}
           - --update-ingress-status
@@ -73,6 +84,10 @@ spec:
 {{- if .Values.nsVIP }}
         - name: "NS_VIP"
           value: "{{ .Values.nsVIP }}"
+{{- end }}
+{{- if .Values.nitroReadTimeout }}
+        - name: "NS_NITRO_READ_TIMEOUT"
+          value: "{{ .Values.nitroReadTimeout }}"
 {{- end }}
         - name: "NS_USER"
           valueFrom:
@@ -100,10 +115,28 @@ spec:
         - name: "kubernetes_url"
           value: "{{ .Values.kubernetesURL }}"
 {{- end }}
+{{- if .Values.clusterName }}
+        - name: "CLUSTER_NAME"
+          value: "{{ .Values.clusterName }}"
+{{- end }}
 {{- if .Values.logProxy }}
         - name: "NS_LOGPROXY"
           value: "{{ .Values.logProxy }}"
 {{- end }}
+{{- if .Values.disableOpenshiftRoutes }}
+        - name: "DISABLE_OPENSHIFT_ROUTES"
+          value: "{{ .Values.disableOpenshiftRoutes }}"
+{{- end }}
+{{- if .Values.nsConfigDnsRec }}
+        - name: "NS_CONFIG_DNS_REC"
+          value: "{{ .Values.nsConfigDnsRec }}"
+{{- end }}
+{{- if .Values.nsSvcLbDnsRec }}
+        - name: "NS_SVC_LB_DNS_REC"
+          value: "{{ .Values.nsSvcLbDnsRec }}"
+{{- end }}
+        resources:
+            {{- toYaml .Values.resources | nindent 12 }}
 {{- if .Values.exporter.required }}
       - name: exporter
         image: "{{ .Values.exporter.image }}"
@@ -117,6 +150,8 @@ spec:
             readOnly: true
         securityContext:
           readOnlyRootFilesystem: true
+        resources:
+            {{- toYaml .Values.exporter.resources | nindent 12 }}
       volumes:
       - name: nslogin
         secret:
@@ -125,6 +160,13 @@ spec:
 {{- if and .Values.nodeSelector.key .Values.nodeSelector.value }}
       nodeSelector:
         {{ .Values.nodeSelector.key }}: {{ .Values.nodeSelector.value }}
+{{- end }}
+{{- if .Values.tolerations }}
+      tolerations: {{ .Values.tolerations | toYaml | nindent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
 {{- end }}
 
 ---
@@ -157,20 +199,21 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
- name: {{ include "servicemonitor.fullname" . }}
- labels:
-   servicemonitor: citrix-adc
+  name: {{ include "servicemonitor.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    servicemonitor: citrix-adc
 spec:
- endpoints:
- - interval: 30s
-   port: exporter-port
- selector:
-   matchLabels:
-     service-type: {{ include "servicemonitorlabel" . }}
- namespaceSelector:
-   matchNames:
-   - monitoring
-   - default
-   - {{ .Release.Namespace }}
+  endpoints:
+  - interval: 30s
+    port: exporter-port
+  selector:
+    matchLabels:
+      service-type: {{ include "servicemonitorlabel" . }}
+  namespaceSelector:
+    matchNames:
+    - monitoring
+    - default
+    - {{ .Release.Namespace }}
 
 {{- end }}

@@ -3,8 +3,8 @@
 Analytics Server IP or DNS
 */}}
 {{- define "analytics.server" -}}
-{{- if .Values.coeConfig.endpoint.server -}}
-{{- printf .Values.coeConfig.endpoint.server -}}
+{{- if .Values.analyticsConfig.endpoint.server -}}
+{{- printf .Values.analyticsConfig.endpoint.server -}}
 {{- else -}}
 {{- $addresses := first (first (lookup "v1" "Node" "" "").items).status.addresses -}}
 {{- printf "%s" ($addresses).address -}}
@@ -66,6 +66,15 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 {{- end -}}
 
+{{- define "cicconfigmap.fullname" -}}
+{{- $name := default .Chart.Name "cic-configmap" .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
 {{/*
 Create chart name and version as used by the chart label.
 */}}
@@ -73,3 +82,13 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "citrix-ingress-controller.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "citrix-ingress-controller.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}

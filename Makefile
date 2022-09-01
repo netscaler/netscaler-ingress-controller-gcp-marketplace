@@ -4,9 +4,9 @@ include ./gcloud.Makefile
 include ./var.Makefile
 
 
-TAG ?= 1.13.20
-GCP_TAG ?=1.13
-EXPORTER_TAG ?= 1.4.7
+TAG ?= 1.26.7
+GCP_TAG ?=1.26
+EXPORTER_TAG ?= 1.4.9
 $(info ---- TAG = $(TAG))
 
 APP_DEPLOYER_IMAGE ?= $(REGISTRY)/citrix-k8s-ingress-controller/deployer:$(TAG)
