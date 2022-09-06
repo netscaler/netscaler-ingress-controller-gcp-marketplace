@@ -1,3 +1,4 @@
+schema.yaml
 x-google-marketplace:
   schemaVersion: v2
   applicationApiVersion: v1beta1
@@ -138,16 +139,16 @@ properties:
     - "INFO"
     - "DEBUG"
     - "TRACE"
-  entityPrefix:
-    type: string
-    title: Prefix
-    description: The prefix for the resources on the Citrix ADC VPX/MPX.
-    default: k8s
   jsonLog:
     type: boolean
     title: Log format in JSON
     description: Set this argument to True if CIC log messages are required in JSON format
     default: False
+  entityPrefix:
+    type: string
+    title: Prefix
+    description: The prefix for the resources on the Citrix ADC VPX/MPX.
+    default: k8s
   nitroReadTimeout:
     type: integer
     title: Nitro Timeout
@@ -161,6 +162,11 @@ properties:
     type: string
     title: Kubernetes URL
     description: The kube-apiserver url that CIC uses to register the events. If the value is not specified, CIC uses the internal kube-apiserver IP address.
+  disableAPIServerCertVerify:
+    type: boolean
+    title: Disable API Server Cert Verification
+    description: Set this parameter to True for disabling API Server certificate verification.
+    default: False
   ingressClass:
     type: string
     title: Ingress Class
@@ -193,11 +199,6 @@ properties:
     title: Use Node Internal IPs
     description: If this variable is set to 'True', then Citrix Ingress Controller prioritises the Node Internal IP to be used for service group members even if node ExternalIP is present.
     default: False
-  disableAPIServerCertVerify:
-    type: boolean
-    title: Disable API Server Cert Verification
-    description: Set this parameter to True for disabling API Server certificate verification.
-    default: False
   ipam:
     type: boolean
     title: Using IPAM Controller?
@@ -208,14 +209,6 @@ properties:
     title: Automatic static route configuration
     description: Automatic static route configuration on Citrix ADC VPX towards the pod network.
     default: False
-  nodeSelector.key:
-    type: string
-    title: Provide Node Selector Key for CIC
-    description: Node label key to be used for nodeSelector option in CIC deployment.
-  nodeSelector.value:
-    type: string
-    title: Provide Node Selector Value for CIC
-    description: Node label value to be used for nodeSelector option in CIC deployment.
   nsHTTP2ServerSide:
     type: string
     title: HTTP2 for Citrix ADC service group
@@ -246,6 +239,27 @@ properties:
     type: string
     title: DNS Nameservers
     description: To add DNS Nameservers in ADC
+  nsLbHashAlgo.required:
+    type: boolean
+    title: Enable LB consistent hashing algorithm
+    description: Set this value to enable the LB consistent hashing Algorithm
+    default: False
+  nsLbHashlgo.hashFingers:
+    type: integer
+    title: Number of fingers for Hash
+    description: Specify the number of fingers to be used for hashing algorithm.
+    default: 256
+    minimum: 1
+    maximum: 1024
+  nsLbHashAlgo.hashAlgorithm:
+    type: string
+    title: Hash Algorithm
+    description: Specifies the supported hashing algorithm.
+    default: 'DEFAULT'
+    enum:
+    - 'DEFAULT'
+    - 'JARH'
+    - 'PRAC'
   exporter.required:
     type: boolean
     title: Prometheus Exporter required?
@@ -268,91 +282,78 @@ properties:
     title: Retain CRDs on delete
     description: Set this argument if you want to retain CustomResourceDefinitions even after uninstalling CIC. This will avoid data-loss of Custom Resource Objects created before uninstallation.
     default: False
-  coeConfig.required:
+  analyticsConfig.required:
     type: boolean
     title: COE Config Required?
     description: Set this to True if you want to configure Citrix ADC to send metrics and transaction records to COE.
     default: False
-  coeConfig.distributedTracing.enable:
+  analyticsConfig.distributedTracing.enable:
     type: boolean
     title: Enable OpenTracing in Citrix ADC.
     description: Set this value to True to enable OpenTracing in Citrix ADC.
     default: False
-  coeConfig.distributedTracing.samplingrate:
+  analyticsConfig.distributedTracing.samplingrate:
     type: integer
     title: OpenTracing sampling rate in percentage.
     description: Specifies the OpenTracing sampling rate in percentage.
     default: 100
     minimum: 0
     maximum: 100
-  coeConfig.endpoint.server:
+  analyticsConfig.endpoint.server:
     type: string
     title: IP address or DNS address of the analytics server.
     description: Set this value as the IP address or DNS address of the analytics server.
-  coeConfig.endpoint.service:
+  analyticsConfig.endpoint.service:
     type: string
     title: IP address or DNS address of the analytics service in Kubernetes.
     description: Set this value as the IP address or service name with namespace of the analytics service deployed in k8s environment. Format is "namespace/servicename".
-  coeConfig.timeseries.port:
+  analyticsConfig.timeseries.port:
     type: integer
     title: Port used to expose COE service for timeseries endpoint.
     description: Specify the port used to expose COE service outside cluster for timeseries endpoint.
     default: 30002
     minimum: 0
     maximum: 65535
-  coeConfig.timeseries.metrics.enable:
+  analyticsConfig.timeseries.metrics.enable:
     type: boolean
     title: Enable sending metrics from Citrix ADC.
     description: Set this value to True to enable sending metrics from Citrix ADC.
     default: False
-  coeConfig.timeseries.metrics.mode:
+  analyticsConfig.timeseries.metrics.mode:
     type: string
     title: Specifies the mode of metric endpoint.
     description: Specifies the mode of metric endpoint.
     default: avro
-  coeConfig.timeseries.auditlogs.enable:
+  analyticsConfig.timeseries.auditlogs.enable:
     type: boolean
     title: Export audit log data from Citrix ADC
     description: Set this value to True to export audit log data from Citrix ADC.
     default: False
-  coeConfig.timeseries.events.enable:
+  analyticsConfig.timeseries.events.enable:
     type: boolean
     title: Export events from the Citrix ADC
     description: Set this value to True to export events from the Citrix ADC.
     default: False
-  coeConfig.transactions.enable:
+  analyticsConfig.transactions.enable:
     type: boolean
     title: Export transactions from Citrix ADC.
     description: Set this value to True to export transactions from Citrix ADC.
     default: False
-  coeConfig.transactions.port:
+  analyticsConfig.transactions.port:
     type: integer
     title: Port used to expose COE service for transaction endpoint.
     description: Specify the port used to expose COE service outside cluster for transaction endpoint.
     default: 30001
     minimum: 0
     maximum: 65535
-  nsLbHashAlgo.required:
-    type: boolean
-    title: Enable LB consistent hashing algorithm
-    description: Set this value to enable the LB consistent hashing Algorithm
-    default: False
-  nsLbHashlgo.hashFingers:
-    type: integer
-    title: Number of fingers for Hash
-    description: Specify the number of fingers to be used for hashing algorithm.
-    default: 256
-    minimum: 1
-    maximum: 1024
-  nsLbHashAlgo.hashAlgorithm:
+  nodeSelector.key:
     type: string
-    title: Hash Algorithm
-    description: Specifies the supported hashing algorithm.
-    default: 'DEFAULT'
-    enum:
-    - 'DEFAULT'
-    - 'JARH'
-    - 'PRAC'
+    title: Provide Node Selector Key for CIC
+    description: Node label key to be used for nodeSelector option in CIC deployment.
+  nodeSelector.value:
+    type: string
+    title: Provide Node Selector Value for CIC
+    description: Node label value to be used for nodeSelector option in CIC deployment.
   appUid:
     type: string
     x-google-marketplace:
@@ -367,4 +368,4 @@ required:
 - nsIP
 - adcCredentialSecret
 - exporter.required
-- coeConfig.required
+- analyticsConfig.required
