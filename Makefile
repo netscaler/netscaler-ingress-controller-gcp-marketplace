@@ -103,7 +103,10 @@ app/build:: .build/citrix-k8s-ingress-controller/debian9  \
 	docker pull quay.io/citrix/citrix-adc-metrics-exporter:$(EXPORTER_TAG)
 	docker tag quay.io/citrix/citrix-adc-metrics-exporter:$(EXPORTER_TAG) \
 	    "$(REGISTRY)/citrix-k8s-ingress-controller/citrix-adc-metrics-exporter:$(EXPORTER_TAG)"
+	docker tag quay.io/citrix/citrix-adc-metrics-exporter:$(EXPORTER_TAG) \
+	    "$(REGISTRY)/citrix-k8s-ingress-controller/citrix-adc-metrics-exporter:$(TAG)"
 	docker push "$(REGISTRY)/citrix-k8s-ingress-controller/citrix-adc-metrics-exporter:$(EXPORTER_TAG)"
+	docker push "$(REGISTRY)/citrix-k8s-ingress-controller/citrix-adc-metrics-exporter:$(TAG)"
 	@touch "$@"
 
 
