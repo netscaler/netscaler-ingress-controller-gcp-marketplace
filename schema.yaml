@@ -1,4 +1,3 @@
-schema.yaml
 x-google-marketplace:
   schemaVersion: v2
   applicationApiVersion: v1beta1
